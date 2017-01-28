@@ -1,0 +1,24 @@
+{
+  "name": "chit-chat",
+  "version": "1.0.0",
+  "description": "basic chat app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominic-taylor/chit-chat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dominic-taylor/chit-chat/issues"
+  },
+  "homepage": "https://github.com/dominic-taylor/chit-chat#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "socket.io": "^1.7.2"
+  }
+}
