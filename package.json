@@ -1,0 +1,29 @@
+{
+  "name": "chit-chat",
+  "version": "1.0.0",
+  "description": "basic chat app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify public/client.js -o public/bundle.js",
+    "watch": "watchify public/client.js -o public/bundle.js -dv"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominic-taylor/chit-chat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dominic-taylor/chit-chat/issues"
+  },
+  "homepage": "https://github.com/dominic-taylor/chit-chat#readme",
+  "dependencies": {
+    "browserify": "^14.0.0",
+    "express": "^4.14.0",
+    "jquery": "^3.1.1",
+    "socket.io": "^1.7.2",
+    "watchify": "^3.9.0"
+  }
+}
