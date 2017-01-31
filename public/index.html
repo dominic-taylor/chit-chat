@@ -1,23 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>socket.io chat</title>
-  <link rel="stylesheet" href="./main.css" type="text/css">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<title>socket.io chat</title>
+	<link href="./main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-  <div id="wrapper">
-    <div id="player-panel">
-      <ul id="messages"></ul>
-      <form id="chatbar" action="">
-        <input id="m" autocomplete="off" /><button id="chat">SEND</button>
-      </form>
-      <div id="player-control">
-      <button id="r">ROLL</button>
-      </div>
-    </div>
-    <div id="game-board"></div>
-  </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/bundle.js"></script>
+	<div id="wrapper">
+		<div id="player-panel">
+			<ul id="messages"></ul>
+			<form action="" id="chatbar" name="chatbar">
+				<input autocomplete="off" id="m"><button id="chat">SEND</button>
+			</form>
+			<div id="player-control">
+				<button id="r">ROLL</button>
+			</div>
+		</div>
+		<div id="game-board"></div>
+	</div>
 </body>
+<script src="/socket.io/socket.io.js">
+</script>
+<script src="/bundle.js">
+</script>
 </html>
