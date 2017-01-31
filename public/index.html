@@ -5,17 +5,19 @@
   <link rel="stylesheet" href="./main.css" type="text/css">
 </head>
 <body>
-  <div id="player-panel">
-    <ul id='messages'></ul>
-    <form id='chatbar' action="">
-      <input id='m' autocomplete="off" /><button>SEND</button>
-    </form>
-    <div id="player-control">
-    <button id='r'>ROLL</button>
+  <div id="wrapper">
+    <div id="player-panel">
+      <ul id="messages"></ul>
+      <form id="chatbar" action="">
+        <input id="m" autocomplete="off" /><button id="chat">SEND</button>
+      </form>
+      <div id="player-control">
+      <button id="r">ROLL</button>
+      </div>
     </div>
+    <div id="game-board"></div>
   </div>
-  <div id="game-board"></div>
-<script src='/socket.io/socket.io.js'></script>
-<script src='/bundle.js'></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/bundle.js"></script>
 </body>
 </html>

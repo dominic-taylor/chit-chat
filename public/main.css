@@ -25,6 +25,13 @@ form button, #r {
   border: none;
   padding: 10px;
 }
+#wrapper{
+  display: flex;
+}
+#player-panel {
+  height: 100%;
+  width: 30%;
+}
 #messages {
   background: #eee;
   list-style-type: none;
@@ -48,12 +55,8 @@ form button, #r {
   height: 100px;;
 }
 #game-board{
-  margin: auto;
+  /*margin: auto;*/
   width: 100px;
   height: 100px;
   background-color: green;
-}
-#player-panel {
-  width: 30%;
-  height: 100%;
 }

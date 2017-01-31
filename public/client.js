@@ -1,31 +1,33 @@
-// const io = require('socket.io')();
-const $ = require('jquery');
 var socket = io();
 
 function scrollMessageBox() {
   var box = document.getElementById('messages');
   box.scrollTop = box.scrollHeight;
 }
-
-$('form').submit(function(){
-  // socket.emit('chat message', $('#m').val());
-  let m = document.getElementById('m')
-  socket.emit('chat message', m.value);
-  m.value = '';
-  return false;
-});
-socket.on('chat message', function (msg) {
-  $('#messages').append($('<li>').text(msg));
+function addMessage(message) {
+  var li = document.createElement("li");
+  li.appendChild(document.createTextNode(message))
+  document.getElementById('messages').appendChild(li)
   scrollMessageBox()
+}
 
+document.getElementById("chatbar").addEventListener("submit", function(e){
+  let text = document.getElementById('m')
+  var name = 'Placeholder chatter'
+  socket.emit('message', {userName:name, message:text.value});
+  text.value = '';
+  e.preventDefault();
+});
+
+socket.on('publish', function (player) {
+  addMessage(player.userName+ ":  " +player.message)
 })
 
 document.getElementById('r').addEventListener('click', function () {
-  socket.emit('roll')
+  var p = 'Placeholder player'
+  socket.emit('roll', {userName:p})
 }, false)
 
-socket.on('roll', function (num) {
-  $('#messages').append($('<li>').text('rolled a '+num));
-  scrollMessageBox()
-
+socket.on('rolled', function (player, num) {
+  addMessage(player.userName + ' rolled a '+num)
 })

@@ -20,21 +20,18 @@ io.on('connection', function (socket) {
   socket.on('disconnect', function () {
     console.log('user disconnected');
   })
-  socket.on('chat message', function(msg) {
-    io.emit('chat message', msg)
-    console.log('message: '+msg);
+  socket.on('message', function(player) {
+    console.log(player.userName +' '+player.message);
+    io.emit('publish', player)
   })
-  socket.on('roll', function() {
-
+  socket.on('roll', function(player) {
     var num = Math.floor(Math.random() * (12 - 2 + 1)) + 2;
-
-    io.emit('roll', num)
-    console.log('got a : ', num);
+    io.emit('rolled', player, num)
   })
 
 })
 
 
 http.listen(3000, function () {
-  console.log('listening on *:3000');
+  console.log('listening on port:3000');
 })
