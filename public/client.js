@@ -23,13 +23,15 @@ document.getElementById("name").addEventListener("submit", function(e){
   let name = document.getElementById('n').value
   socket.emit('set user name', {userName:name});
   e.preventDefault();
-  //Once user has chosen name, allow to change name? 
+  //Once user has chosen name, allow to change name?
 });
 
 socket.on('added user', function(data){
   //update plauer list
   document.getElementById('this-player').innerHTML = data.newPlayer
-  document.getElementById('player-list').innerHTML = data.users
+  for (var i = 0; i < data.users.length; i++) {
+    document.getElementById('player-list').innerHTML += '<li>'+data.users[i]
+  }
 
   //notify all users a new player has joined.
   socket.emit('message', {userName:'NOTICE:', message:data.newPlayer+' has joined'})

@@ -16,9 +16,16 @@ app.get('/', function (req, res) {
 
 const users = []
 
+//1) When connection is made, assign uid to client
+//2) Use uid as key in user object in users arr i.e
+// #890890{userName: PlayerJO}
+//
+
+
 io.on('connection', function (socket) {
   console.log('a user connected');
   socket.on('set user name', function (data) {
+    console.log(socket.userName);
     if(users.indexOf(data.userName) > -1){
       io.emit('publish', {userName: 'NOTICE::', message:' Sorry, '+data.userName+' is taken'})
     }

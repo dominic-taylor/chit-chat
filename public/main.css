@@ -39,7 +39,7 @@ body {
 	width: 80%;
 	margin-right: .5%;
 }
-#chatbar button, #r {
+#chatbar button, #r, #namebutton {
 	width: 19%;
 	background: rgb(130, 224, 255);
 	border: none;
