@@ -19,6 +19,15 @@ document.getElementById("chatbar").addEventListener("submit", function(e){
   e.preventDefault();
 });
 
+document.getElementById("create").addEventListener("click", function(e){
+  let name = document.getElementById('n').value
+  if(name.length<1){name = 'Player#'+Math.floor(Math.random() * (100 - 2 + 1)) + 2}
+  socket.emit('set user name', name);
+  sendGame()
+  e.preventDefault();
+  //Once user has chosen name, allow to change name?
+});
+
 document.getElementById("join").addEventListener("click", function(e){
   let name = document.getElementById('n').value
   if(name.length<1){name = 'Player#'+Math.floor(Math.random() * (100 - 2 + 1)) + 2}
@@ -26,6 +35,7 @@ document.getElementById("join").addEventListener("click", function(e){
   e.preventDefault();
   //Once user has chosen name, allow to change name?
 });
+
 
 socket.on('added user', function(data){
   //update plauer list
@@ -82,3 +92,25 @@ function addParticipantsMessage(data) {
   //   document.getElementById('player-list').innerHTML += '<li>'+data.users[i]
   // }
 }
+
+function joinGame() {
+  socket.emit('joinGame')
+}
+function sendGame(){
+  socket.emit('makeGame');
+};
+socket.on('joinSuccess', function (data) {
+  addMessage('Joining Game #', data.gameId)
+})
+
+socket.on('alreadyJoined', function (data) {
+  addMessage('You are in a Game, #', data.gameId)
+})
+
+function leaveGame() {
+  socket.emit('leaveGame');
+}
+
+socket.on('leftGame', function (data) {
+  addMessage('Leaving Game #', data.gameId)
+})

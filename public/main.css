@@ -42,7 +42,7 @@ body {
 	width: 80%;
 	margin-right: .5%;
 }
-#chatbar button, #r, #join {
+button {
 	width: 19%;
 	background: rgb(130, 224, 255);
 	border: none;
@@ -51,7 +51,7 @@ body {
 #r {
 	width: 100%
 }
-#join{
+#join, #leave{
 	width: 200px;
 }
 #messages {

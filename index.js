@@ -57,6 +57,29 @@ io.on('connection', function (socket) {
       numUsers: numUsers
     })
   })
+  socket.on('joinGame', function () {
+    console.log(socket.username + "wants to join a game");
+
+    var alreadyInGame = false;
+
+    for(var i = 0; i < gameCollection.totalGameCount; i++){
+        var plyr1Tmp = gameCollection.gameList[i]['gameObject']['playerOne'];
+        var plyr2Tmp = gameCollection.gameList[i]['gameObject']['playerTwo'];
+        if (plyr1Tmp == socket.username || plyr2Tmp == socket.username){
+
+            console.log(socket.username + " already has a Game!");
+
+            socket.emit('alreadyJoined', {
+            gameId: gameCollection.gameList[i]['gameObject']['id']
+            });
+        }
+    }
+    if (alreadyInGame == false){
+      console.log("Add them into a Game!!!")
+    }
+  });
+  // });
+
 
   socket.on('disconnect', function () {
     if(addedUser){
@@ -72,22 +95,40 @@ io.on('connection', function (socket) {
 
 
   socket.on('makeGame', function () {
-      let gameId = (Math.random()+1).toString(36).slice(2, 18);
-      console.log('Game #'+gameId+' created by '+socket.username);
+      console.log(JSON.stringify(gameCollection.gameList));
 
-      gameCollection.gameList.gameId = gameId
-      gameCollection.gameList.gameId.playerOne = socket.username
-      gameCollection.gameList.gameId.open = true
-      gameCollection.totalGameCount++;
-
-      io.emit('gameCreated', {
-        username: socket.username,
-        gameId: gameId
-      })
-
-
+      let noGamesFound = true;
+      for (var i = 0; i < gameCollection.totalGameCount; i++) {
+        var tempName = gameCollection.gameList[i]['gameObject']['playerOne']
+        if(tempName === socket.username){
+          noGamesFound = false;
+          console.log('This user already has a Game');
+          socket.emit('alreadyJoined', {
+            gameId: gameCollection.gameList[i]['gameObject']['id']
+          })
+        }
+      }
+      if(noGamesFound === true){
+        buildGame(socket)
+      }
   })
 
+function buildGame(socket) {
+  let gameObject = {}
+
+  gameObject.id = (Math.random()+1).toString(36).slice(2, 18);
+  gameObject.playerOne = socket.username
+  gameCollection.totalGameCount++;
+  gameCollection.gameList.push({gameObject});
+
+  console.log('Game #'+gameId+' created by '+socket.username);
+
+  io.emit('gameCreated', {
+    username: socket.username,
+    gameId: gameId
+  })
+
+}
   socket.on('roll', function(data) {
     console.log(data+' rolled');
     var num = Math.floor(Math.random() * (12 - 2 + 1)) + 2;
@@ -97,11 +138,51 @@ io.on('connection', function (socket) {
 })
 
 function joinGame(username, game) {
-  if(game.player2 !== null){
-    game.player2 = username
-  }else{
-    console.log('game #'+game.id+" alread y has max players");
-  }
+  console.log(socket.username + " wants to join a game");
+
+    var alreadyInGame = false;
+
+    for(var i = 0; i < gameCollection.totalGameCount; i++){
+        var plyr1Tmp = gameCollection.gameList[i]['gameObject']['playerOne'];
+        var plyr2Tmp = gameCollection.gameList[i]['gameObject']['playerTwo'];
+        if (plyr1Tmp == socket.username || plyr2Tmp == socket.username){
+        alreadyInGame = true;
+
+        console.log(socket.username + " already has a Game!");
+
+        socket.emit('alreadyJoined', {
+        gameId: gameCollection.gameList[i]['gameObject']['id']
+        });
+
+    }
+}
+    if (alreadyInGame == false){
+        gameSeeker(socket);
+
+    }
+}
+
+function gameSeeker (socket) {
+    ++loopLimit;
+    if (( gameCollection.totalGameCount == 0) || (loopLimit >= 20)) {
+        buildGame(socket);
+        loopLimit = 0;
+
+    }
+     else {
+        var rndPick = Math.floor(Math.random() * gameCollection.totalGameCount);
+        if (gameCollection.gameList[rndPick]['gameObject']['playerTwo'] == null){
+            gameCollection.gameList[rndPick]['gameObject']['playerTwo'] = socket.username;
+            socket.emit('joinSuccess', {
+                gameId: gameCollection.gameList[rndPick]['gameObject']['id'] });
+
+            console.log( socket.username + " has been added to: " + gameCollection.gameList[rndPick]['gameObject']['id']);
+
+        }
+        else {
+            gameSeeker(socket);
+        }
+        }
 }
 http.listen(port, function () {
   console.log('listening on port:%d', port);
