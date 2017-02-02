@@ -14,6 +14,9 @@ body {
 	position: relative;
 	max-width: 100%;
 }
+#login-page{
+	display: inline-block;
+}
 #player-panel {
 	display: inline-block;
 	height: 1000px;
@@ -39,7 +42,7 @@ body {
 	width: 80%;
 	margin-right: .5%;
 }
-#chatbar button, #r, #namebutton {
+#chatbar button, #r, #join {
 	width: 19%;
 	background: rgb(130, 224, 255);
 	border: none;
@@ -48,7 +51,9 @@ body {
 #r {
 	width: 100%
 }
-
+#join{
+	width: 200px;
+}
 #messages {
 	background: #eee;
 	list-style-type: none;
