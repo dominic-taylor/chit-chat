@@ -119,7 +119,7 @@ io.on('connection', function(socket) {
 			gameObject
 		});
 		console.log('Game #' + gameObject.id + ' created by ' + socket.username);
-		io.emit('gameCreated', {// what does this? 
+		io.emit('gameCreated', {// what does this?
 			username: socket.username,
 			gameId: gameObject.id
 		})
@@ -130,10 +130,11 @@ io.on('connection', function(socket) {
   		var gameId = gameCollection.gameList[i]['gameObject']['id']
   		var player1temp = gameCollection.gameList[i]['gameObject']['playerOne']
   		var player2temp = gameCollection.gameList[i]['gameObject']['playerTwo']
-  		if (player1temp == socket.username) {
+			console.log('is player one and two in this? ', gameCollection.gameList[i]);
+  		if (player1temp == socket.username || player2temp == socket.username) {
   			--gameCollection.totalGameCount;
   			gameCollection.gameList.splice(i, 1)
-  			socket.emit('leftGame', {
+  			io.emit('leftGame', {
   				gameId: gameId
   			})
   			io.emit('gameDestroyed', {
@@ -141,13 +142,16 @@ io.on('connection', function(socket) {
   				gameOwner: socket.username
   			})
   			notInGame = false;
-  		} else if (player2temp == socket.username) {
-  			--gameCollection.totalGameCount;
-  			socket.emit('leftGame', {
-  				gameId: gameId
-  			})
-  			notInGame = false;
+				console.log('is player one and two in this? ', gameCollection.gameList[i]);
   		}
+			//  else if (player2temp == socket.username) {
+  		// 	gameCollection.gameList[i]['gameObject']['playerTwo'] = null;
+  		// 	io.emit('leftGame', {
+  		// 		gameId: gameId
+  		// 	})
+			//
+  		// 	notInGame = false;
+  		// }
   	}
   	if (notInGame == true) {
   		socket.emit('notInGame')
@@ -181,7 +185,8 @@ function gameSeeker(socket, loopLimit) {
 		var rndPick = Math.floor(Math.random() * gameCollection.totalGameCount);
 		if (gameCollection.gameList[rndPick]['gameObject']['playerTwo'] == null) {
 			gameCollection.gameList[rndPick]['gameObject']['playerTwo'] = socket.username;
-			socket.emit('joinSuccess', {
+			io.emit('joinSuccess', {
+				player: socket.username,
 				gameId: gameCollection.gameList[rndPick]['gameObject']['id']
 			});
 			console.log(socket.username + " has been added to: " + gameCollection.gameList[rndPick]['gameObject']['id']);

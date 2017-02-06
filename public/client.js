@@ -31,14 +31,14 @@ document.getElementById("findGame").addEventListener("click", function(e){
 
 socket.on('login', function (data) {
   connected = true;
-  let message = 'Welcome to the Game!';
+  let message = 'Welcome to Pick-up Pong!';
   document.getElementById('this-player').innerHTML = data.username
   addMessage(message);
   addParticipantsMessage(data);
 })
 
 socket.on('user joined', function (data) {
-  addMessage(data.username+ ' joined!')
+  addMessage(data.username+ ' joined the lobby.')
   addParticipantsMessage(data)
 })
 
@@ -49,14 +49,16 @@ socket.on('publish', function (data) {
 socket.on('rolled', function (data, num) {
   addMessage(data + ' rolled a '+num)
 })
-
+socket.on('gameCreated', function (data) {
+  addMessage(data.username+ ' created a Game #'+data.gameId)
+})
 socket.on('user left', function (data) {
   addMessage(data.username+ ' left the lobby.')
   addParticipantsMessage(data)
 })
 
 socket.on('joinSuccess', function (data) {
-  addMessage('Joining Game #'+ data.gameId)
+  addMessage(data.player+' joining Game #'+ data.gameId)
 })
 
 socket.on('alreadyJoined', function (data) {
@@ -102,7 +104,7 @@ function addMessage(message) {
 function addParticipantsMessage(data) {
   let message = ''
   if(data.numUsers === 1){
-    message = 'One person in game'
+    message = 'One person in lobby.'
   }else{
     message = 'There are '+ data.numUsers+ ' players in the lobby'
   }
