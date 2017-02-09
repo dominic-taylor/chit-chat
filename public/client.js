@@ -2,7 +2,6 @@ var socket = io();
 
 document.getElementById("chatbar").addEventListener("submit", function(e){
   let text = document.getElementById('m')
-  let name = document.getElementById('this-player').innerHTML
   socket.emit('message', text.value); //needs to be sanitized
   text.value = '';
   e.preventDefault();
@@ -51,6 +50,7 @@ socket.on('rolled', function (data, num) {
 })
 socket.on('gameCreated', function (data) {
   addMessage(data.username+ ' created a Game #'+data.gameId)
+  //start game
 })
 socket.on('user left', function (data) {
   addMessage(data.username+ ' left the lobby.')
@@ -59,6 +59,8 @@ socket.on('user left', function (data) {
 
 socket.on('joinSuccess', function (data) {
   addMessage(data.player+' joining Game #'+ data.gameId)
+  console.log('joinedgame'+socket.gameId);
+
 })
 
 socket.on('alreadyJoined', function (data) {
@@ -67,6 +69,7 @@ socket.on('alreadyJoined', function (data) {
 
 socket.on('leftGame', function (data) {
   addMessage('Leaving Game #'+ data.gameId)
+  console.log('leftgame'+socket.gameId);
 })
 
 socket.on('notInGame', function () {
