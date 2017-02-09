@@ -8,13 +8,31 @@
 </head>
 <body>
 	<div id="wrapper">
+		<div class="lobby">
+			<div id="login-page">
+				<h3 class="title">What's your nickname?</h3>
+				 <input class="usernameInput" id="n" type="text" maxlength="20" />
+			</div>
+			<div class="gamebuttons">
+				<button id="join">Join Lobby</button>
+				<button id="leave">Leave Game</button>
+				<button id="findGame">Find Game</button>
+			</div>
+	 </div>
+
+
 		<div id="player-panel">
+
 			<ul id="messages"></ul>
 			<form action="" id="chatbar" name="chatbar">
 				<input autocomplete="off" id="m"><button id="chat">SEND</button>
 			</form>
 			<div id="player-control">
 				<button id="r">ROLL</button>
+
+				<h2>Players</h2>
+				<h3 id="this-player"></h3>
+				<ul id="player-list"></ul>
 			</div>
 		</div>
 		<div id="game-board"></div>
