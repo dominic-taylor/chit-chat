@@ -1,5 +1,7 @@
 var socket = io();
-
+// if connected = true
+// remove login div covering game board etc
+//
 document.getElementById("chatbar").addEventListener("submit", function(e){
   let text = document.getElementById('m')
   socket.emit('message', text.value); //needs to be sanitized
@@ -55,6 +57,7 @@ socket.on('gameCreated', function (data) {
 socket.on('user left', function (data) {
   addMessage(data.username+ ' left the lobby.')
   addParticipantsMessage(data)
+  connected = false;
 })
 
 socket.on('joinSuccess', function (data) {
