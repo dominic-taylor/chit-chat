@@ -118,7 +118,7 @@ io.on('connection', function(socket) {
 		socket.on('player move', function (data) {
 			console.log(socket.username + ' In game '+data.gameId+' and '+data.move);
 			// make playes join a room when joining/making a game
-			// then emit message only to that room - todo
+			// then emit message only to that room 
 			let gameRoom =  data.gameId
 			io.to(gameRoom).emit('updateGame', {
 					player: socket.username,
@@ -139,12 +139,13 @@ io.on('connection', function(socket) {
 		});
 		console.log('Game #' + gameObject.id + ' created by ' + socket.username);
 		socket.gameId = gameObject.id
-		//add scoket.username to room name gameId
 		let gameRoom = gameObject.id
 		socket.join(gameRoom)
 		io.to(gameRoom).emit('gameCreated', {
-			username: socket.username,
-			gameId: gameObject.id
+					game: gameObject,
+					username: socket.username,
+					gameId: gameObject.id
+
 		})
 	}
   function killGame(socket) {
@@ -185,7 +186,9 @@ function gameSeeker(socket, loopLimit) {
 			let gameRoom = gameCollection.gameList[rndPick]['gameObject']['id']
 			socket.join(gameRoom)
 			io.to(gameRoom).emit('joinSuccess', {
-				player: socket.username,
+				game: gameCollection.gameList[rndPick]['gameObject'],
+				playerOne: gameCollection.gameList[rndPick]['gameObject']['playerOne'],
+				playerTwo: gameCollection.gameList[rndPick]['gameObject']['playerTwo'],
 				gameId: gameCollection.gameList[rndPick]['gameObject']['id']
 			});
 			console.log(socket.username + " has been added to: " + gameCollection.gameList[rndPick]['gameObject']['id']);

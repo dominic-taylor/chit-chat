@@ -80,3 +80,10 @@ button {
 	background-color: orange;
 	overflow: hidden;
 } 
+.waiting{
+	width:100px;
+  height: 100px;
+  background: yellow;
+  color: white;
+  margin: auto;
+}
