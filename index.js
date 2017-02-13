@@ -13,18 +13,15 @@ app.get('/', function(req, res) {
 	res.sendFile(path.join(__dirname, 'public/index.html'))
 })
 const users = []
-	//1) When connection is made, assign uid to client
-	//2) Use uid as key in user object in users arr i.e
-	// #890890{userName: PlayerJO}
-	//
+let numUsers = 0;
 let gameCollection = new function() {
 	this.totalGameCount = 0,
 		this.gameList = []
 }
-let numUsers = 0;
 io.on('connection', function(socket) {
 		let addedUser = false;
 		console.log('a user connected');
+
     socket.on('set user name', function(username) {
       if (addedUser) return;
       socket.username = username
@@ -35,30 +32,34 @@ io.on('connection', function(socket) {
         username: socket.username,
         numUsers: numUsers,
       });
+
       socket.broadcast.emit('user joined', {
         username: socket.username,
         numUsers: numUsers,
       })
+
       io.emit('update participants', {
         users: users
       })
     })
+
 		socket.on('message', function(data) {
 			io.emit('publish', {
 				username: socket.username,
 				message: data
 			})
 		})
+
 		socket.on('joinGame', function() {
 			console.log(socket.username + "wants to join a game");
-			if(socket.username == undefined) {
+			if(!socket.username) {
 				socket.emit('publish', {
 					username: 'NOTE: ',
 					message: 'You must join the lobby to find a game.'
 				})
 				return
 			}
-			var alreadyInGame = false;
+			let alreadyInGame = false;
 			for (var i = 0; i < gameCollection.totalGameCount; i++) {
 				var plyr1Tmp = gameCollection.gameList[i]['gameObject']['playerOne'];
 				var plyr2Tmp = gameCollection.gameList[i]['gameObject']['playerTwo'];
@@ -72,12 +73,13 @@ io.on('connection', function(socket) {
 			}
 			if (alreadyInGame == false) {
 				gameSeeker(socket, 0)
-				console.log("Add them into a Game!!!")
+				console.log("Seeking a Game!!!")
 			}
 		});
 		socket.on('disconnect', function() {
 			if (addedUser) {
 				--numUsers;
+				//find/remove this user from user []
 				console.log('user disconnected');
 				socket.broadcast.emit('user left', {
 					username: socket.username,
@@ -85,15 +87,12 @@ io.on('connection', function(socket) {
 				})
 			}
 		})
-		socket.on('makeGame', function() {
-			console.log(JSON.stringify(gameCollection.gameList));
+		socket.on('requestGame', function() {
 			let noGamesFound = true;
 			for (var i = 0; i < gameCollection.totalGameCount; i++) {
-				var tempName = gameCollection.gameList[i]['gameObject']['playerOne']
-				if (tempName === socket.username) {
+				// var tempName = gameCollection.gameList[i]['gameObject']['playerOne']
+				if (gameCollection.gameList[i]['gameObject']['playerOne'] === socket.username) {
 					noGamesFound = false;
-					console.log('This user already has a Game');
-					console.log(gameCollection.gameList[i]['gameObject']['id']);
 					socket.emit('alreadyJoined', {
 						gameId: gameCollection.gameList[i]['gameObject']['id']
 					})
@@ -115,7 +114,20 @@ io.on('connection', function(socket) {
 				killGame(socket)
 			}
 		})
-	}) ////ioemit connect
+
+		socket.on('player move', function (data) {
+			console.log(socket.username + ' In game '+data.gameId+' and '+data.move);
+			// make playes join a room when joining/making a game
+			// then emit message only to that room 
+			let gameRoom =  data.gameId
+			io.to(gameRoom).emit('updateGame', {
+					player: socket.username,
+					move: data.move
+			})
+			//socket.broadcast.to('the-unique-room-name').emit('update', data)
+		})
+
+}) ////ioemit connect
 
 	function buildGame(socket) {
 		let gameObject = {}
@@ -123,13 +135,17 @@ io.on('connection', function(socket) {
 		gameObject.playerOne = socket.username
 		gameCollection.totalGameCount++;
 		gameCollection.gameList.push({
-
 			gameObject
 		});
 		console.log('Game #' + gameObject.id + ' created by ' + socket.username);
-		io.emit('gameCreated', {// what does this?
-			username: socket.username,
-			gameId: gameObject.id
+		socket.gameId = gameObject.id
+		let gameRoom = gameObject.id
+		socket.join(gameRoom)
+		io.to(gameRoom).emit('gameCreated', {
+					game: gameObject,
+					username: socket.username,
+					gameId: gameObject.id
+
 		})
 	}
   function killGame(socket) {
@@ -165,8 +181,14 @@ function gameSeeker(socket, loopLimit) {
 		var rndPick = Math.floor(Math.random() * gameCollection.totalGameCount);
 		if (gameCollection.gameList[rndPick]['gameObject']['playerTwo'] == null) {
 			gameCollection.gameList[rndPick]['gameObject']['playerTwo'] = socket.username;
-			io.emit('joinSuccess', {
-				player: socket.username,
+			socket.gameId = gameCollection.gameList[rndPick]['gameObject']['id']
+			//add scoket.username to room name gameId
+			let gameRoom = gameCollection.gameList[rndPick]['gameObject']['id']
+			socket.join(gameRoom)
+			io.to(gameRoom).emit('joinSuccess', {
+				game: gameCollection.gameList[rndPick]['gameObject'],
+				playerOne: gameCollection.gameList[rndPick]['gameObject']['playerOne'],
+				playerTwo: gameCollection.gameList[rndPick]['gameObject']['playerTwo'],
 				gameId: gameCollection.gameList[rndPick]['gameObject']['id']
 			});
 			console.log(socket.username + " has been added to: " + gameCollection.gameList[rndPick]['gameObject']['id']);

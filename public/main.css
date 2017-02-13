@@ -16,6 +16,8 @@ body {
 }
 #login-page{
 	display: inline-block;
+	position: relative;
+	border: 1px solid red;
 }
 #player-panel {
 	display: inline-block;
@@ -51,7 +53,7 @@ button {
 #r {
 	width: 100%
 }
-#join, #leave{
+#join, #leave, #findGame{
 	width: 200px;
 }
 #messages {
@@ -78,3 +80,10 @@ button {
 	background-color: orange;
 	overflow: hidden;
 } 
+.waiting{
+	width:100px;
+  height: 100px;
+  background: yellow;
+  color: white;
+  margin: auto;
+}
