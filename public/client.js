@@ -52,8 +52,41 @@ socket.on('rolled', function (data, num) {
 })
 socket.on('gameCreated', function (data) {
   addMessage(data.username+ ' created a Game #'+data.gameId)
-  //start game
+  initGame(data)//start game
 })
+
+function initGame(data) {
+
+  let board = document.getElementById('game-board')
+  let div = document.createElement('div')
+
+  div.style.width = "100px"
+  div.style.height = "100px"
+  div.style.background = 'red'
+  div.style.color = 'white'
+  div.style.margin = 'auto'
+  div.innerHTML = data.username
+  div.addEventListener("click", function (e) {
+    //make this send to server
+    let gameId = data.gameId
+    let p = data.username
+    let move = " did a move!"
+    socket.emit('player move', {
+        gameId: gameId,
+        move: move
+    })
+    console.log('here is ', e.target.innerHTML);
+  })
+  board.appendChild(div)
+}
+  // add player button to board
+  // with listner to hear paper scissors rock choice
+socket.on('updateGame', function (data) {
+  console.log(socket);
+  console.log(data.username);
+  console.log(data.username +' played: '+ data.move+'!!!');
+})
+
 socket.on('user left', function (data) {
   addMessage(data.username+ ' left the lobby.')
   addParticipantsMessage(data)
@@ -62,8 +95,8 @@ socket.on('user left', function (data) {
 
 socket.on('joinSuccess', function (data) {
   addMessage(data.player+' joining Game #'+ data.gameId)
-  console.log('joinedgame'+socket.gameId);
-
+  console.log('joinedgame '+data.gameId);
+  initJoinGame(data)
 })
 
 socket.on('alreadyJoined', function (data) {
@@ -93,7 +126,7 @@ function joinGame() {
   socket.emit('joinGame')
 }
 function sendGame(){
-  socket.emit('makeGame');
+  socket.emit('requestGame');
 };
 
 function leaveGame() {
