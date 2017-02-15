@@ -1,2 +1,2 @@
 # chit-chat
-basic chat app
+chat app and basic matching making game server
